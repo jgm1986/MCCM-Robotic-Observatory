@@ -92,7 +92,7 @@ then
         install_rts2
 	echo "[ INFO ] Please continue with configuration process..."
 else
-    echo "Unsupported Operating System";
+	echo "[ ERROR ] Unsupported Operating System. This script only runs over Ubuntu 16.04."
 fi
 
 exit 0
