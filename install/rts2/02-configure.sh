@@ -50,6 +50,23 @@ function rts2_config_values(){
 }
 
 
+# This function creates a stars database.
+function create_db_stars(){
+	createdb stars # you must be user which have granted database access
+	cd rts2/src/sql
+	./rts2-builddb stars
+	cd ../../
+	echo "[ OK ]"
+}
+
+# This function is used for RTS2 configuration with dummy devices.
+function dummy_devices_conf(){
+	cd src/sql/data
+	psql stars < dummy.sql
+	echo "[ OK ]"
+}
+
+
 ##------------------------------------
 ## RTS2 Installation Script
 ##------------------------------------
@@ -63,6 +80,10 @@ then
         create_rts2_dir
 	echo "[ INFO ] Setting configuration fields using user values."
 	rts2_config_values
+	echo "[ INFO ] Creating Stars database."
+	#create_db_stars
+	echo "[ INFO ] If you want to roun RTS2 with dummy devices."
+	#dummy_devices_conf
 else
 	echo "[ ERROR ] Unsupported Operating System. This script only runs over Ubuntu 16.04."
 fi
