@@ -10,6 +10,7 @@ function ubuntu_dependencies(){
 	sudo apt-get update
 	sudo apt-get install libtool -y
 	sudo apt-get install git postgresql postgresql-server-dev-9.5 libecpg-dev automake libtool libcfitsio3-dev libnova-dev libecpg-dev gcc g++ libncurses5-dev libgraphicsmagick++1-dev libx11-dev docbook-xsl xsltproc libxml2-dev libarchive-dev libjson-glib-dev libsoup2.4-dev pkg-config -y
+	sudo apt-get install libusb-1.0-0-dev libusb-dev check libwebsockets-dev -y;
 }
 
 
@@ -31,6 +32,7 @@ function check_downloads_dir(){
 function install_wcstools(){
 	wget http://tdc-www.harvard.edu/software/wcstools/wcstools-3.9.4.tar.gz
 	tar xzf wcstools-3.9.4.tar.gz
+	rm -rf wcstools-3.9.4.tar.gz
 	cd wcstools-3.9.4/
 	# Check if the current machine runs in 64bits architecture.
 	MACHINE_TYPE=`uname -m`
@@ -53,28 +55,33 @@ function install_wcstools(){
 	sudo mkdir /usr/local/include/wcstools
 	sudo cp *.h /usr/local/include/wcstools/
 	sudo cp libwcs.a /usr/local/lib/libwcstools.a
-	cd ..
-	cd ..
+	cd ../../
 	echo "[ OK ] WCSTools installation completed."
 }
-
 
 # Commands used for RTS2 installation.
 function install_rts2(){
 	git clone https://github.com/RTS2/rts2.git
 	cd rts2
 	./autogen.sh
+	sleep 5
 	./configure
+	sleep 5
 	aclocal
+	sleep 5
 	automake --add-missing
+	sleep 5
 	autoconf
+	sleep 5
 	autoheader
+	sleep 5
 	./configure
+	sleep 5
 	make
+	sleep 5
 	sudo make install
 	echo "[ OK ] RTS2 installation completed."
 }
-
 
 
 ##------------------------------------
