@@ -67,8 +67,8 @@ function create_db_stars(){
 # This function is used for RTS2 configuration with dummy devices.
 function dummy_devices_conf(){
 	cd src/sql/data
-	cd ../../../
 	psql stars < dummy.sql
+	cd ../../../
 	echo "[ OK ]"
 }
 
@@ -90,7 +90,7 @@ then
 	prepare_db
 	echo "[ INFO ] Creating Stars database."
 	create_db_stars
-	echo "[ INFO ] If you want to roun RTS2 with dummy devices."
+	echo "[ INFO ] If you want run RTS2 with dummy devices."
 	dummy_devices_conf
 	echo "[ INFO ] Test RTS2."
 	rts2-targetinfo 1
