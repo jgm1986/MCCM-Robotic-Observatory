@@ -50,14 +50,15 @@ function rts2_config_values(){
 
 # Prepare database for RTS2 user.
 function prepare_db(){
-	sudo -H -u postgres bash -c 'createuser --interactive $USER'
+	CREATEUSERCMD="createuser --interactive $USER"
+	sudo -H -u postgres bash -c " $CREATEUSERCMD "
 	echo "[ OK ]"
 }
 
 # This function creates a stars database.
 function create_db_stars(){
 	createdb stars # you must be user which have granted database access
-	cd rts2/src/sql
+	cd src/sql
 	./rts2-builddb stars
 	cd ../../
 	echo "[ OK ]"
@@ -66,6 +67,7 @@ function create_db_stars(){
 # This function is used for RTS2 configuration with dummy devices.
 function dummy_devices_conf(){
 	cd src/sql/data
+	cd ../../../
 	psql stars < dummy.sql
 	echo "[ OK ]"
 }
