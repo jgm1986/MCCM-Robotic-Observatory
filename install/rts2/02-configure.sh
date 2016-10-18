@@ -27,7 +27,6 @@ function move_inside_rts2(){
 	echo "[ OK ]"
 }
 
-
 # Creating and populating /etc/rts2 directory for rts2 configuration files.
 function create_rts2_dir(){
 	if [ -d /etc/rts2 ] ; then
@@ -49,6 +48,11 @@ function rts2_config_values(){
 	echo "[ OK ]"
 }
 
+# Prepare database for RTS2 user.
+function prepare_db(){
+	sudo -H -u postgres bash -c 'createuser --interactive $USER'
+	echo "[ OK ]"
+}
 
 # This function creates a stars database.
 function create_db_stars(){
@@ -68,7 +72,7 @@ function dummy_devices_conf(){
 
 
 ##------------------------------------
-## RTS2 Installation Script
+## RTS2 Configuration Script
 ##------------------------------------
 if [ "`lsb_release -is`" == "Ubuntu" ]
 then
@@ -80,10 +84,14 @@ then
         create_rts2_dir
 	echo "[ INFO ] Setting configuration fields using user values."
 	rts2_config_values
+	echo "[ INFO ] Preparing database."
+	prepare_db
 	echo "[ INFO ] Creating Stars database."
-	#create_db_stars
+	create_db_stars
 	echo "[ INFO ] If you want to roun RTS2 with dummy devices."
-	#dummy_devices_conf
+	dummy_devices_conf
+	echo "[ INFO ] Test RTS2."
+	rts2-targetinfo 1
 else
 	echo "[ ERROR ] Unsupported Operating System. This script only runs over Ubuntu 16.04."
 fi
