@@ -64,21 +64,13 @@ function install_rts2(){
 	git clone https://github.com/RTS2/rts2.git
 	cd rts2
 	./autogen.sh
-	sleep 5
 	./configure
-	sleep 5
 	aclocal
-	sleep 5
 	automake --add-missing
-	sleep 5
 	autoconf
-	sleep 5
 	autoheader
-	sleep 5
 	./configure
-	sleep 5
 	make
-	sleep 5
 	sudo make install
 	echo "[ OK ] RTS2 installation completed."
 }
@@ -97,6 +89,7 @@ then
         install_wcstools
         echo "[ INFO ] Installing RTS2."
         install_rts2
+	sudo ldconfig
 	echo "[ INFO ] Please continue with configuration process..."
 else
 	echo "[ ERROR ] Unsupported Operating System. This script only runs over Ubuntu 16.04."
