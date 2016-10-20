@@ -10,6 +10,7 @@ ADD . /home/rts2/
 RUN cd /home/rts2 && \
 	ls -ls && \
 	sudo apt-get update && \
-	/home/rts2/install/rts2/01-install.sh
+	/home/rts2/install/rts2/01-install.sh && \
+	/home/rts2/install/indi/01-install.sh
 WORKDIR /home/rts2
 
