@@ -17,16 +17,16 @@ after_success:
     echo "[ INFO ] Uploading Docker image to DockerHub.";
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     DOCKER_ID=$(sudo docker ps -aqf "name=rts2docker");
-    sudo docker commit -a "Javier Gusano Martinez <jgm1986@hotmail.com>" -m "version 1.0-DEV" $DOCKER_ID jgm1986/rts2:latest;
-    docker tag jgm1986/rts2:v0.1 jgm1986/rts2:v0.1;
+    sudo docker commit -a "Javier Gusano Martinez <jgm1986@hotmail.com>" -m "version latest" $DOCKER_ID jgm1986/rts2:latest;
+    docker tag jgm1986/rts2:latest jgm1986/rts2:latest;
     sudo docker images;
     docker push jgm1986/rts2;
     echo [ INFO ] Done!;
     fi
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     DOCKER_ID=$(sudo docker ps -aqf "name=rts2docker");
-    sudo docker commit -a "Javier Gusano Martinez <jgm1986@hotmail.com>" -m "version 1.0-DEV" $DOCKER_ID jgm1986/tests:develop;
-    docker tag jgm1986/tests:latest jgm1986/tests:latest;
+    sudo docker commit -a "Javier Gusano Martinez <jgm1986@hotmail.com>" -m "version develop" $DOCKER_ID jgm1986/tests:develop;
+    docker tag jgm1986/tests:develop jgm1986/tests:develop;
     sudo docker images;
     docker push jgm1986/tests;
     echo "Uploaded to DockerHub test site.";
