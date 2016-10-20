@@ -81,14 +81,14 @@ function install_rts2(){
 ##------------------------------------
 if [ "`lsb_release -is`" == "Ubuntu" ]
 then
-        echo "[ INFO ] Installing Ubuntu dependencies."
-        ubuntu_dependencies
-        echo "[ INFO ] Creating a new directory for downloads."
-        check_downloads_dir
-        echo "[ INFO ] Installing WCSTools."
-        install_wcstools
-        echo "[ INFO ] Installing RTS2."
-        install_rts2
+	echo "[ INFO ] Installing Ubuntu dependencies."
+	ubuntu_dependencies
+	echo "[ INFO ] Creating a new directory for downloads."
+	check_downloads_dir
+	echo "[ INFO ] Installing WCSTools."
+	install_wcstools
+	echo "[ INFO ] Installing RTS2."
+	install_rts2
 	sudo ldconfig
 	echo "[ INFO ] Please continue with configuration process..."
 else
