@@ -72,6 +72,11 @@ function dummy_devices_conf(){
 	echo "[ OK ]"
 }
 
+function rts2_as_service(){
+	sudo cp rts2.initd /etc/init.d/rts2
+	sudo cp conf/services conf/devices conf/centrald conf/sd /etc/rts2
+	echo "[ OK ]"
+}
 
 ##------------------------------------
 ## RTS2 Configuration Script
@@ -94,6 +99,8 @@ then
 	dummy_devices_conf
 	echo "[ INFO ] Test RTS2."
 	rts2-targetinfo 1
+	echo "[ INFO ] Configuring RTS2 as service."
+	rts2_as_service
 else
 	echo "[ ERROR ] Unsupported Operating System. This script only runs over Ubuntu 16.04."
 fi
