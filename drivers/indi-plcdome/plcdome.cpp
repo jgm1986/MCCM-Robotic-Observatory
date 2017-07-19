@@ -20,10 +20,10 @@
 */
 
 /* MaxDome II Command Set */
-#include "maxdomeiidriver.h"
+#include "plcdomedriver.h"
 
 /* Our driver header */
-#include "maxdomeii.h"
+#include "plcdome.h"
 
 #include "config.h"
 

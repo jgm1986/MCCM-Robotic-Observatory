@@ -31,7 +31,7 @@
 
 #include "indicom.h"
 #include "indidevapi.h"
-#include "maxdomeiidriver.h"
+#include "plcdomedriver.h"
 
 #ifndef _WIN32
 #include <termios.h>

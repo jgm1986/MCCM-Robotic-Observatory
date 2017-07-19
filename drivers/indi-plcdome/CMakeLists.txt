@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-PROJECT(indi_maxdomeii C CXX)
+PROJECT(indi_plcdome C CXX)
 
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/")
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_modules/")
@@ -22,16 +22,16 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories( ${INDI_INCLUDE_DIR})
 include_directories( ${NOVA_INCLUDE_DIR})
 
-########### MaxDome II ###########
-set(indimaxdomeii_SRCS
-   ${CMAKE_CURRENT_SOURCE_DIR}/maxdomeiidriver.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/maxdomeii.cpp
+########### PLC Dome ###########
+set(indiplcdome_SRCS
+   ${CMAKE_CURRENT_SOURCE_DIR}/plcdomedriver.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/plcdome.cpp
    )
 
-add_executable(indi_maxdomeii ${indimaxdomeii_SRCS})
+add_executable(indi_plcdome ${indiplcdome_SRCS})
 
-target_link_libraries(indi_maxdomeii ${INDI_LIBRARIES} ${NOVA_LIBRARIES})
+target_link_libraries(indi_plcdome ${INDI_LIBRARIES} ${NOVA_LIBRARIES})
 
-install(TARGETS indi_maxdomeii RUNTIME DESTINATION bin )
+install(TARGETS indi_plcdome RUNTIME DESTINATION bin )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/indi_plcdome.xml DESTINATION ${INDI_DATA_DIR})
