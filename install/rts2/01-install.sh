@@ -30,7 +30,7 @@ function check_downloads_dir(){
 
 # Steps used for WCSTools installation.
 function install_wcstools(){
-	wget http://tdc-www.harvard.edu/software/wcstools/wcstools-3.9.4.tar.gz
+	wget http://tdc-www.harvard.edu/software/wcstools/wcstools-3.9.5.tar.gz
 	tar xzf wcstools-3.9.4.tar.gz
 	rm -rf wcstools-3.9.4.tar.gz
 	cd wcstools-3.9.4/
