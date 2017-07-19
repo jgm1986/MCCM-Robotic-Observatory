@@ -11,7 +11,7 @@ before_install:
 script:
   - docker ps
   - docker ps -a
-  - drivers/01-dev-environment.sh
+  - drivers/01-indi-dev-install.sh
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
