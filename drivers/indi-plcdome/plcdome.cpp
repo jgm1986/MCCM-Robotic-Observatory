@@ -1,8 +1,6 @@
 /*
-    MaxDome II 
-    Copyright (C) 2009 Ferran Casarramona (ferran.casarramona@gmail.com)
-
-    Migrated to INDI::Dome by Jasem Mutlaq (2014)
+    INDI PLC Dome
+    Copyright (C) 2017 Javier Martinez Gusano
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -149,7 +147,7 @@ MaxDomeII::~MaxDomeII()
 
 const char * MaxDomeII::getDefaultName()
 {
-        return (char *)"MaxDome II";
+        return (char *)"PLC Dome";
 }
 
 bool MaxDomeII::initProperties()
