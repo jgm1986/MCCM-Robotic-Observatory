@@ -17,8 +17,8 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef MAXDOMEII_H
-#define MAXDOMEII_H
+#ifndef PLCDOME_H
+#define PLCDOME_H
 
 #include <indidevapi.h>
 #include <indicom.h>
@@ -28,11 +28,11 @@
 #define MD_AZIMUTH_MOVING 1
 #define MD_AZIMUTH_HOMING 2
 
-class MaxDomeII : public INDI::Dome
+class PlcDome : public INDI::Dome
 {
  public:
- MaxDomeII();
- ~MaxDomeII();
+ PlcDome();
+ ~PlcDome();
 
  const char *getDefaultName();
  bool initProperties();
@@ -94,7 +94,7 @@ protected:
 private:
 
  int nTicksPerTurn;             // Number of ticks per turn of azimuth dome
- unsigned nCurrentTicks;        // Position as reported by the MaxDome II
+ unsigned nCurrentTicks;        // Position as reported by the PlcDome
  int nCloseShutterBeforePark;   // 0 no close shutter
  double nParkPosition;		// Park position
  double nHomeAzimuth;		// Azimuth of home position

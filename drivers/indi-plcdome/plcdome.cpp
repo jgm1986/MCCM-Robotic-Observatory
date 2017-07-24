@@ -17,7 +17,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-/* MaxDome II Command Set */
+/* PlcDome Command Set */
 #include "plcdomedriver.h"
 
 /* Our driver header */
@@ -36,7 +36,7 @@
 const int POLLMS = 1000;                            // Period of update, 1 second.
 
 // We declare an auto pointer to dome.
-std::unique_ptr<MaxDomeII> dome(new MaxDomeII());
+std::unique_ptr<PlcDome> dome(new PlcDome());
 
 void ISGetProperties(const char *dev)
 {
@@ -75,7 +75,7 @@ void ISSnoopDevice (XMLEle *root)
     dome->ISSnoopDevice(root);
 }
 
-MaxDomeII::MaxDomeII()
+PlcDome::PlcDome()
 {
 
    fd = -1;
@@ -95,7 +95,7 @@ MaxDomeII::MaxDomeII()
    setVersion(INDI_PLCDOME_VERSION_MAJOR, INDI_PLCDOME_VERSION_MINOR);
 }
 
-bool MaxDomeII::SetupParms()
+bool PlcDome::SetupParms()
 {
     DomeAbsPosN[0].value = 0;
 
@@ -105,16 +105,16 @@ bool MaxDomeII::SetupParms()
     return true;
 }
 
-bool MaxDomeII::Connect()
+bool PlcDome::Connect()
 {
     int error;
 
     if (fd >= 0)
-        Disconnect_MaxDomeII(fd);
+        Disconnect_PlcDome(fd);
 
     DEBUG(INDI::Logger::DBG_SESSION, "Opening port ...");
 
-    fd = Connect_MaxDomeII(PortT[0].text);
+    fd = Connect_PlcDome(PortT[0].text);
 
     if (fd < 0)
     {
@@ -124,11 +124,11 @@ bool MaxDomeII::Connect()
 
     DEBUG(INDI::Logger::DBG_SESSION, "Connecting ...");
 
-    error = Ack_MaxDomeII(fd);
+    error = Ack_PlcDome(fd);
     if (error)
     {
         DEBUGF(INDI::Logger::DBG_ERROR, "Error connecting to dome (%s).", ErrorMessages[-error]);
-        Disconnect_MaxDomeII(fd);
+        Disconnect_PlcDome(fd);
         fd = -1;
         return false;
     }
@@ -140,17 +140,17 @@ bool MaxDomeII::Connect()
     return true;
 }
 
-MaxDomeII::~MaxDomeII()
+PlcDome::~PlcDome()
 {
     prev_az = prev_alt = 0;
 }
 
-const char * MaxDomeII::getDefaultName()
+const char * PlcDome::getDefaultName()
 {
         return (char *)"PLC Dome";
 }
 
-bool MaxDomeII::initProperties()
+bool PlcDome::initProperties()
 {
     INDI::Dome::initProperties();
 
@@ -186,7 +186,7 @@ bool MaxDomeII::initProperties()
     return true;
 }
 
-bool MaxDomeII::updateProperties()
+bool PlcDome::updateProperties()
 {
     INDI::Dome::updateProperties();
 
@@ -216,7 +216,7 @@ bool MaxDomeII::updateProperties()
     return true;
 }
 
-bool MaxDomeII::saveConfigItems(FILE *fp)
+bool PlcDome::saveConfigItems(FILE *fp)
 {
     IUSaveConfigNumber(fp, &HomeAzimuthNP);
     IUSaveConfigNumber(fp, &TicksPerTurnNP);
@@ -227,16 +227,16 @@ bool MaxDomeII::saveConfigItems(FILE *fp)
     return INDI::Dome::saveConfigItems(fp);
 }
 
-bool MaxDomeII::Disconnect()
+bool PlcDome::Disconnect()
 {
     if (fd >= 0)
-        Disconnect_MaxDomeII(fd);
+        Disconnect_PlcDome(fd);
 
     return true;
 }
 
 
-void MaxDomeII::TimerHit()
+void PlcDome::TimerHit()
 {
     SH_Status nShutterStatus;
     AZ_Status nAzimuthStatus;
@@ -248,7 +248,7 @@ void MaxDomeII::TimerHit()
     if(isConnected() == false)
         return;  //  No need to reset timer if we are not connected anymore
 
-    nError = Status_MaxDomeII(fd, &nShutterStatus, &nAzimuthStatus, &nCurrentTicks, &nHomePosition);
+    nError = Status_PlcDome(fd, &nShutterStatus, &nAzimuthStatus, &nCurrentTicks, &nHomePosition);
     handle_driver_error(&nError, &nRetry); // This is a timer, we will not repeat in order to not delay the execution.
     
     // Increment movment time counter
@@ -471,7 +471,7 @@ void MaxDomeII::TimerHit()
     return;
 }
 
-IPState MaxDomeII::MoveAbs(double newAZ)
+IPState PlcDome::MoveAbs(double newAZ)
 {
     double currAZ = 0;
     int newPos = 0, nDir = 0;
@@ -484,23 +484,23 @@ IPState MaxDomeII::MoveAbs(double newAZ)
     if (newAZ > currAZ)
     {
         if (newAZ - currAZ > 180.0)
-            nDir = MAXDOMEII_WE_DIR;
+            nDir = PLCDOME_WE_DIR;
         else
-            nDir = MAXDOMEII_EW_DIR;
+            nDir = PLCDOME_EW_DIR;
     }
     else
     {
         if (currAZ - newAZ > 180.0)
-            nDir = MAXDOMEII_EW_DIR;
+            nDir = PLCDOME_EW_DIR;
         else
-            nDir = MAXDOMEII_WE_DIR;
+            nDir = PLCDOME_WE_DIR;
     }
 
     newPos = AzimuthToTicks(newAZ);
 
     while (nRetry)
     {
-        error = Goto_Azimuth_MaxDomeII(fd, nDir, newPos);
+        error = Goto_Azimuth_PlcDome(fd, nDir, newPos);
         handle_driver_error(&error, &nRetry);
     }
 
@@ -515,20 +515,20 @@ IPState MaxDomeII::MoveAbs(double newAZ)
 
 }
 
-bool MaxDomeII::Abort()
+bool PlcDome::Abort()
 {
     int error=0;
     int nRetry = 3;
 
     while (nRetry)
     {
-            error = Abort_Azimuth_MaxDomeII(fd);
+            error = Abort_Azimuth_PlcDome(fd);
             handle_driver_error(&error, &nRetry);
     }
 
     while (nRetry)
     {
-            error = Abort_Shutter_MaxDomeII(fd);
+            error = Abort_Shutter_PlcDome(fd);
             handle_driver_error(&error, &nRetry);
     }
 
@@ -550,7 +550,7 @@ bool MaxDomeII::Abort()
 /**************************************************************************************
 **
 ***************************************************************************************/
-bool MaxDomeII::ISNewNumber (const char *dev, const char *name, double values[], char *names[], int n)
+bool PlcDome::ISNewNumber (const char *dev, const char *name, double values[], char *names[], int n)
 {
     // Ignore if not ours
     if (strcmp (dev, getDeviceName()))
@@ -576,7 +576,7 @@ bool MaxDomeII::ISNewNumber (const char *dev, const char *name, double values[],
         {
             while (nRetry)
             {
-                error = SetTicksPerCount_MaxDomeII(fd, nVal);
+                error = SetTicksPerCount_PlcDome(fd, nVal);
                 handle_driver_error(&error,&nRetry);
             }
             if (error >= 0)
@@ -710,7 +710,7 @@ bool MaxDomeII::ISNewNumber (const char *dev, const char *name, double values[],
 /**************************************************************************************
 **
 ***************************************************************************************/
-bool MaxDomeII::ISNewSwitch (const char *dev, const char *name, ISState *states, char *names[], int n)
+bool PlcDome::ISNewSwitch (const char *dev, const char *name, ISState *states, char *names[], int n)
 {
     // ignore if not ours //
     if (strcmp (getDeviceName(), dev))
@@ -730,7 +730,7 @@ bool MaxDomeII::ISNewSwitch (const char *dev, const char *name, ISState *states,
         int nRetry = 3;
             
         while (nRetry){
-            error = Home_Azimuth_MaxDomeII(fd);
+            error = Home_Azimuth_PlcDome(fd);
             handle_driver_error(&error, &nRetry);
         }
         nTimeSinceAzimuthStart = 0;
@@ -793,7 +793,7 @@ bool MaxDomeII::ISNewSwitch (const char *dev, const char *name, ISState *states,
 /**************************************************************************************
 **
 ***************************************************************************************/
-int MaxDomeII::AzimuthDistance(int nPos1, int nPos2)
+int PlcDome::AzimuthDistance(int nPos1, int nPos2)
 {
 	int nDif;
 	
@@ -807,7 +807,7 @@ int MaxDomeII::AzimuthDistance(int nPos1, int nPos2)
 /**************************************************************************************
  **
  ***************************************************************************************/
-double MaxDomeII::TicksToAzimuth(int nTicks)
+double PlcDome::TicksToAzimuth(int nTicks)
 {
 	double nAz;
 	
@@ -820,7 +820,7 @@ double MaxDomeII::TicksToAzimuth(int nTicks)
 /**************************************************************************************
  **
  ***************************************************************************************/
-int MaxDomeII::AzimuthToTicks(double nAzimuth)
+int PlcDome::AzimuthToTicks(double nAzimuth)
 {
 	int nTicks;
 	
@@ -835,7 +835,7 @@ int MaxDomeII::AzimuthToTicks(double nAzimuth)
  **
  ***************************************************************************************/
 
-int MaxDomeII::handle_driver_error(int *error, int *nRetry)
+int PlcDome::handle_driver_error(int *error, int *nRetry)
 {	
 	(*nRetry)--;
 	switch (*error) {
@@ -862,7 +862,7 @@ int MaxDomeII::handle_driver_error(int *error, int *nRetry)
 /************************************************************************************
 *
 * ***********************************************************************************/
-IPState MaxDomeII::ConfigurePark(int nCSBP, double ParkAzimuth)
+IPState PlcDome::ConfigurePark(int nCSBP, double ParkAzimuth)
 {
     int error=0;
     int nRetry = 3;
@@ -872,7 +872,7 @@ IPState MaxDomeII::ConfigurePark(int nCSBP, double ParkAzimuth)
     {
         while (nRetry)
         {
-            error =SetPark_MaxDomeII(fd, nCSBP, AzimuthToTicks(ParkAzimuth));
+            error =SetPark_PlcDome(fd, nCSBP, AzimuthToTicks(ParkAzimuth));
             handle_driver_error(&error,&nRetry);
         }
         if (error >= 0)
@@ -894,7 +894,7 @@ IPState MaxDomeII::ConfigurePark(int nCSBP, double ParkAzimuth)
 /************************************************************************************
  *
 * ***********************************************************************************/
-void MaxDomeII::SetCurrentPark()
+void PlcDome::SetCurrentPark()
 {
     SetAxis1Park(DomeAbsPosN[0].value);
 }
@@ -902,7 +902,7 @@ void MaxDomeII::SetCurrentPark()
  *
 * ***********************************************************************************/
 
-void MaxDomeII::SetDefaultPark()
+void PlcDome::SetDefaultPark()
 {
     // By default set position to 0
     SetAxis1Park(0);
@@ -911,7 +911,7 @@ void MaxDomeII::SetDefaultPark()
 /************************************************************************************
  *
 * ***********************************************************************************/
-IPState MaxDomeII::ControlShutter(ShutterOperation operation)
+IPState PlcDome::ControlShutter(ShutterOperation operation)
 {
     int error=0;
     int nRetry = 3;
@@ -920,7 +920,7 @@ IPState MaxDomeII::ControlShutter(ShutterOperation operation)
     {
         while (nRetry)
         {
-            error = Close_Shutter_MaxDomeII(fd);
+            error = Close_Shutter_PlcDome(fd);
             handle_driver_error(&error, &nRetry);
         }
         nTimeSinceShutterStart = 0;	// Init movement timer
@@ -937,7 +937,7 @@ IPState MaxDomeII::ControlShutter(ShutterOperation operation)
         {   // Open Shutter
             while (nRetry)
             {
-                error = Open_Shutter_MaxDomeII(fd);
+                error = Open_Shutter_PlcDome(fd);
                 handle_driver_error(&error, &nRetry);
             }
             nTimeSinceShutterStart = 0;	// Init movement timer
@@ -952,7 +952,7 @@ IPState MaxDomeII::ControlShutter(ShutterOperation operation)
         { // Open upper shutter only
             while (nRetry)
             {
-                error = Open_Upper_Shutter_Only_MaxDomeII(fd);
+                error = Open_Upper_Shutter_Only_PlcDome(fd);
                 handle_driver_error(&error, &nRetry);
             }
             nTimeSinceShutterStart = 0;	// Init movement timer
